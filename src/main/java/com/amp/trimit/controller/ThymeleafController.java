@@ -38,9 +38,19 @@ public class ThymeleafController {
     }
 
     
-
     @GetMapping("/{code}")
-    public ResponseEntity<Void> redirect(@PathVariable String code) {
+    public ResponseEntity<Void> redirectByCode(@PathVariable String code) {
+    String longUrl = urlTrimService.findUrlByCode(code);
+    if (longUrl == null) {
+        return ResponseEntity.notFound().build();
+    }
+    return ResponseEntity.status(302)
+            .location(URI.create(longUrl))
+            .build();
+}
+
+    @GetMapping("/redirect")
+    public ResponseEntity<Void> redirect(@RequestParam String code) {
         String longUrl = urlTrimService.findUrlByCode(code);
         if (longUrl == null) {
             return ResponseEntity.notFound().build();
